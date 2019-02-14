@@ -129,25 +129,40 @@ public function beforeFilter(Event $event){
     //$user->this->
 
 
-    if($this->request->is('post')){
+   
+        
+        if($this->request->is('post')){
+            $user=$this->Auth->identify();
+            if($user){
+               
+                   $user=$this->Auth->setUser($user);
+                   return $this->redirect(['controller'=>'Users','action'=>'index']);
+ 
+            }
+            $this->Flash->error(__('Sorry login was not successfull fucker'));
+        }
+        //if($this->request->is('post')){
+        // if($this->Auth->user('id')){
+        //     $this->Flash->warning(__('Logged in'));
+        //     return $this->redirect(['controller'=>'Users','action'=>'index']);
+
+        // }
+        // else{
+        //     $user=$this->Auth->identify();
+        //     $user=$this->Auth->setUser($user);
+           
+        //     $this->Flash->success(__('Login Successfull'));
+        //     return $this->redirect(['controller'=>'Users','action'=>'index']);
+        // }
         
 
-        if($this->Auth->user('id')){
-            $this->Flash->warning(__('Logged in'));
-            return $this->redirect(['controller'=>'Users','action'=>'index']);
-
-        }
-        else{
-            $user=$this->Auth->identify();
-            print_r($user);
-            $this->Flash->success(__('Login Successfull'));
-            return $this->redirect(['controller'=>'Users','action'=>'index']);
-        }
-        $this->Flash->error(__('Sorry login was not successfull fucker'));
-
-    }
+   // }
     // $this->set(compact('user'));
     // $this->set('_serialize',['user']);
+ }
+ public function logout(){
+     $this->Flash->success(__("You are logout now."));
+     return $this->redirect($this->Auth->logout());
  }
     
 }

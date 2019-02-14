@@ -39,29 +39,44 @@ class AppController extends Controller
      */
     public function initialize()
     {
-        // parent::initialize();
+        parent::initialize();
 
-        // $this->loadComponent('RequestHandler', [
-        //     'enableBeforeRedirect' => false,
-        // ]);
-        // $this->loadComponent('Flash');
-    parent::initialize();
-    $this->loadComponent('RequestHandler');
-    $this->loadComponent('Flash'); 
-    $this->loadComponent('Auth', [
-        'loginAction' => [
-            'controller' => 'Users',
-            'action' => 'login',
-            
-        ],
-        'authError' => 'Did you really think you are allowed to see that?',
-        'authenticate' => [
-            'Form' => [
-                'fields' => ['email' =>'email','password'=>'password']
+        $this->loadComponent('RequestHandler');
+        
+        $this->loadComponent('Flash');
+         $this->loadComponent('Auth',[
+             'authenticate'=>[
+                'Form' => [
+                    'fields' => ['username' => 'email',
+                                 'password' => 'password'
+                         ]
+                ]
+            ],
+            'loginAction' => [
+                'controller' => 'Users',
+                'action' => 'login'
+                
             ]
-        ],
-        'storage' => 'Session'
-    ]);  
+         ]);   
+
+
+    // parent::initialize();
+    // $this->loadComponent('RequestHandler');
+    // $this->loadComponent('Flash'); 
+    // $this->loadComponent('Auth', [
+    //     'loginAction' => [
+    //         'controller' => 'Users',
+    //         'action' => 'login',
+            
+    //     ],
+    //     'authError' => 'Did you really think you are allowed to see that?',
+    //     'authenticate' => [
+    //         'Form' => [
+    //             'fields' => ['email' =>'email','password'=>'password']
+    //         ]
+    //     ],
+    //     'storage' => 'Session'
+    // ]);  
         
 
         
@@ -70,5 +85,13 @@ class AppController extends Controller
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
         //$this->loadComponent('Security');
+    }
+
+    public function beforeRender(Event $event){
+        if(!array_key_exists('_serialize',$this->viewVars) && 
+        in_array( $this->response->type(),['application/json','application/xml'])
+        ){
+            $this->set('_serialize',true);
+        }
     }
 }
